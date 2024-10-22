@@ -1,0 +1,16 @@
+@use 'variables';
+@use 'sass:color'; // Import the color module
+
+@mixin button-style {
+    padding: 10px;
+    background-color: variables.$highlight-color;
+    color: variables.$white-color;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  
+    &:hover {
+      background-color: color.adjust(variables.$highlight-color, $lightness: -10%);
+    }
+}

@@ -1,0 +1,91 @@
+@use 'variables';
+@use 'mixins';
+@use 'buttons';
+@use 'forms';
+
+body {
+  background-color: variables.$background-color;
+}
+  
+.header-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid variables.$border-color;
+}
+  
+.product-container {
+  padding: 0 20px;
+}
+  
+.product-row {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-between; 
+  margin: 0 -10px;
+}
+  
+.product-box {
+  flex: 1 1 calc(25% - 20px); 
+  box-sizing: border-box; 
+  margin: 10px; 
+  padding: 15px; 
+  border: 1px solid variables.$border-color; 
+  border-radius: 5px; 
+  background-color: variables.$white-color;
+  transition: box-shadow 0.3s; 
+  
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  }
+}
+
+.product-box .product-details {
+  text-align: center;
+}
+  
+footer {
+  text-align: center;
+  border-top: 1px solid variables.$border-color;
+  margin-top: 20px;
+  background-color: variables.$highlight-color;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+
+  p {
+    margin: 0;
+    padding: 10px;
+    color: variables.$white-color;
+  }
+}
+  
+h1 {
+  color: variables.$highlight-color;
+}
+
+@media (max-width: 768px) {
+  .product-box {
+    flex: 1 1 calc(50% - 20px); 
+  }
+}
+
+@media (max-width: 480px) {
+  .product-box {
+    flex: 1 1 100%; 
+  }
+}
+
+.pl-20 {
+  padding-left: 20px;
+}
+
+.content {
+  flex-direction: column;
+  min-height: 78vh;
+}
+
+p .text-danger {
+  color: variables.$highlight-color;
+  margin: 0;
+}

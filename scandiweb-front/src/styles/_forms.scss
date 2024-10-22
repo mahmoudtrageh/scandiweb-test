@@ -1,0 +1,46 @@
+.form {
+    width: 50%;
+    min-width: 450px;
+    flex-direction: column;
+    min-height: 75vh;
+    margin-top: 20px;
+
+    input, 
+    select {
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .form-group {
+        display: flex;
+        margin-top: 10px;
+        width: 70%;
+        align-items: center;
+
+        .form-control {
+            padding: 5px;
+            width: 80%;
+        }
+
+        div {
+            width: 100%;
+        }
+        p {
+            margin: 0;
+        }
+    }
+
+    label {
+        margin-right: 10px;
+        width: 30%;
+        font-weight: 400;
+    }
+
+    p {
+        font-weight: bold;
+    }
+}
+
+
+  

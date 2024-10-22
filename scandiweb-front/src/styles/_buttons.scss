@@ -1,0 +1,13 @@
+@use 'mixins';
+
+.btn {
+    @include mixins.button-style;
+    margin: 5px;
+    text-decoration: none;
+}
+  
+button {
+    @include mixins.button-style;
+    padding: 10px 15px !important;
+    font-size: 14px;
+}
