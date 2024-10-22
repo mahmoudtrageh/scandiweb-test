@@ -1,5 +1,6 @@
 {
   "name": "scandiweb-task",
+  "homepage": "https://scandiweb-test.koomiz.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
