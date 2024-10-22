@@ -1,0 +1,7 @@
+# Node modules
+scandiweb-front/node_modules/
+
+# PHP specific
+/config/db
+
+.htaccess
