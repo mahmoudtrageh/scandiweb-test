@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Set the base directory
+    RewriteBase /
+
+    # Serve index.html from the public directory
+    RewriteRule ^$ public/index.php [L]
+
+    # Redirect all requests to index.html except for existing files and directories
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php [L]
+
+    RewriteRule ^api/(.*)$ api/$1 [L] # Adjust this if your PHP files are in a different location
+</IfModule>
