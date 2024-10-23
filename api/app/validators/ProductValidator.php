@@ -17,9 +17,7 @@ class Validator
         // Validate required fields first
         $this->validateRequiredFields();
 
-       
         // Return errors if any exist
-       
         if (!empty($this->errors)) {
             return ['errors' => $this->errors[0]];
         } 
@@ -32,7 +30,6 @@ class Validator
         }
         
         return false;
-
     }
 
     private function validateRequiredFields()
