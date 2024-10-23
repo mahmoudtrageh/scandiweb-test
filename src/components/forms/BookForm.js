@@ -1,10 +1,10 @@
 import React from 'react';
 
-const BookForm = ({ onChange, errors }) => {
+const BookForm = ({ onChange }) => {
     return (
-        <div id="book" className='pl-20'>
+        <div id="Book" className='pl-20'>
             <div className='form-group'>
-                <label htmlFor="">Weight (Kg)</label>
+                <label htmlFor="weight">Weight (Kg)</label>
                 <input type="number" id="weight" min="0" step="0.1" name="weight" onChange={onChange} className='form-control' />
             </div>
 

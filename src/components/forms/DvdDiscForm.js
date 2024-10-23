@@ -1,10 +1,10 @@
 import React from 'react';
 
-const DvdDiscForm = ({ onChange, errors }) => {
+const DvdDiscForm = ({ onChange }) => {
     return (
-        <div id="dvd_disc" className='pl-20'>
+        <div id="DVD" className='pl-20'>
             <div className='form-group'>
-                <label htmlFor="">Size (MB)</label>
+                <label htmlFor="sizeZ">Size (MB)</label>
                 <input type="number" id="size" min="0" step="0.1" name="size" onChange={onChange} className='form-control' />
             </div>
 

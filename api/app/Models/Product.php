@@ -105,40 +105,45 @@ class Product {
             exit;
         }
 
-        // Set product properties
-        $this->setSku($productData->sku);
-        $this->setName($productData->name);
-        $this->setPrice($productData->price);
-        $this->setSize($productData->size);
-        $this->setWeight($productData->weight);
-        $this->setHeight($productData->height);
-        $this->setWidth($productData->width);
-        $this->setLength($productData->length);
-
-        $sql = "INSERT INTO " . $this->table . " (sku, name, price, size, weight, height, width, length) 
-                VALUES (:sku, :name, :price, :size, :weight, :height, :width, :length)";    
-
-        $stmt = $this->conn->prepare($sql);
-
-        $sku = $this->getSku();
-        $name = $this->getName();
-        $price = $this->getPrice();
-        $size = $this->getSize();
-        $weight = $this->getWeight();
-        $height = $this->getHeight();
-        $width = $this->getWidth();
-        $length = $this->getLength();
+        try {
+            // Set product properties
+            $this->setSku($productData->sku);
+            $this->setName($productData->name);
+            $this->setPrice($productData->price);
+            $this->setSize($productData->size);
+            $this->setWeight($productData->weight);
+            $this->setHeight($productData->height);
+            $this->setWidth($productData->width);
+            $this->setLength($productData->length);
     
-        $stmt->bindParam(':sku', $sku);  
-        $stmt->bindParam(':name', $name);    
-        $stmt->bindParam(':price', $price);    
-        $stmt->bindParam(':size', $size);    
-        $stmt->bindParam(':weight', $weight);    
-        $stmt->bindParam(':height', $height);    
-        $stmt->bindParam(':width', $width);    
-        $stmt->bindParam(':length', $length);   
+            $sql = "INSERT INTO " . $this->table . " (sku, name, price, size, weight, height, width, length) 
+                    VALUES (:sku, :name, :price, :size, :weight, :height, :width, :length)";    
     
-        $stmt->execute();
+            $stmt = $this->conn->prepare($sql);
+    
+            $sku = $this->getSku();
+            $name = $this->getName();
+            $price = $this->getPrice();
+            $size = $this->getSize();
+            $weight = $this->getWeight();
+            $height = $this->getHeight();
+            $width = $this->getWidth();
+            $length = $this->getLength();
+        
+            $stmt->bindParam(':sku', $sku);  
+            $stmt->bindParam(':name', $name);    
+            $stmt->bindParam(':price', $price);    
+            $stmt->bindParam(':size', $size);    
+            $stmt->bindParam(':weight', $weight);    
+            $stmt->bindParam(':height', $height);    
+            $stmt->bindParam(':width', $width);    
+            $stmt->bindParam(':length', $length);   
+        
+            $stmt->execute();
+        
+        } catch (PDOException $e) {
+            return false;            
+        }
     }
 
     public function deleteProducts() {

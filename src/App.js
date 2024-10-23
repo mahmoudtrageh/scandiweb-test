@@ -1,15 +1,15 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import './styles/main.scss';
-import ListProducts from './components/ListProducts';
-import AddProduct from './components/AddProduct';
+import ProductList from './components/ProductList';
+import ProductAdd from './components/ProductAdd';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route index element={<ListProducts />} />
-          <Route path="/add-product" element={<AddProduct />} />
+          <Route index element={<ProductList />} />
+          <Route path="/add-product" element={<ProductAdd />} />
         </Routes>
        
   

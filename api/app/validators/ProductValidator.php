@@ -1,10 +1,10 @@
 <?php
+
 class Validator
 {
     private $errors = [];
-    private $data;
+    private $data; 
     private $conn; 
-    private $table = 'products';
 
     public function __construct($data, PDO $db)
     {
@@ -16,15 +16,22 @@ class Validator
     {
         // Validate required fields first
         $this->validateRequiredFields();
-        if (!empty($this->errors)) {
-            return ['errors' => $this->errors[0]]; // Return the first error
-        }
 
-        // Validate unique SKU only if no required field errors
-        $this->validateUniqueSku();
+       
+        // Return errors if any exist
+       
         if (!empty($this->errors)) {
-            return ['errors' => $this->errors[0]]; // Return the first error
+            return ['errors' => $this->errors[0]];
+        } 
+        
+        $this->checkFieldTypes();
+        
+        if(!empty($this->errors))
+        {
+            return ['errors' => $this->errors[0]]; 
         }
+        
+        return false;
 
     }
 
@@ -32,79 +39,58 @@ class Validator
     {
         $requiredFields = ['sku', 'name', 'price', 'type'];
 
-        switch ($this->data->type) {
-            case 'dvd_disc':
+        switch ($this->data->type ?? '') {
+            case 'DVD':
                 $requiredFields[] = 'size';
                 break;
-            case 'book':
+            case 'Book':
                 $requiredFields[] = 'weight';
                 break;
-            case 'furniture':
+            case 'Furniture':
                 $requiredFields = array_merge($requiredFields, ['height', 'width', 'length']);
                 break;
         }
              
         foreach ($requiredFields as $field) {
-            if (!isset($this->data->$field) || empty($this->data->$field) && $this->data->$field != 0) {
-                $this->errors[] = "Please, submit required data"; // Collect error messages
-                break; // Break after the first error
+            if (!isset($this->data->$field) || (is_null($this->data->$field) || trim($this->data->$field) === '')) {
+                $this->errors[] = "Please, submit required data";
+                break;
             }
-        }
-
-        if (empty($this->errors)) {
-            $this->checkFieldTypes();
         }
     }
 
     private function checkFieldTypes()
     {
         $this->validateNumeric($this->data->price);
-        
         $this->validateString($this->data->name);
 
         switch ($this->data->type) {
-            case 'dvd_disc':
+            case 'DVD':
                 $this->validateNumeric($this->data->size);
                 break;
-            case 'book':
+            case 'Book':
                 $this->validateNumeric($this->data->weight);
                 break;
-            case 'furniture':
+            case 'Furniture':
                 foreach (['height', 'width', 'length'] as $dimension) {
                     $this->validateNumeric($this->data->$dimension);
                 }
                 break;
         }
     }
-
-    private function validateNumeric($value)
+    
+     private function validateNumeric($value)
     {
-        if (!isset($value) || !is_numeric($value) || $value <= 0) {
+       
+        if ($value == '' || $value <= 0) {
             $this->errors[] = 'Please, provide the data of indicated type';
         }
     }
 
     private function validateString($value)
     {
-        if (!isset($value) || !is_string($value)) {
+        if (trim($value) === '') {
             $this->errors[] = 'Please, provide the data of indicated type';
         }
-    }
-
-    private function validateUniqueSku()
-    {
-        if ($this->isSkuNotUnique($this->data->sku)) {
-            $this->errors[] = 'SKU must be unique.'; // Collect SKU uniqueness error
-        }
-    }
-
-    private function isSkuNotUnique($sku)
-    {
-        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM " . $this->table . " WHERE sku = :sku");
-        $stmt->bindParam(':sku', $sku);
-        $stmt->execute();
-        $count = $stmt->fetchColumn();
-    
-        return $count > 0;
     }
 }

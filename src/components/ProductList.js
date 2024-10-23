@@ -1,24 +1,23 @@
 
 
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export default function ListProducts() {
+export default function ProductList() {
 
     const [products, setproducts] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState(new Set());
-    const navigate = useNavigate();
 
     useEffect(() => {
         getProducts();
+        document.title = "Product List"; // Set the page title
     }, []);
 
+    const navigate = useNavigate();
+
     function getProducts() {
-        axios.get('https://scandiweb-test.koomiz.com/', {
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        axios.get('https://scandiweb-test.koomiz.com/api/public/', {
             method: 'GET', 
         }).then(function (response) {
             setproducts(response.data);
@@ -37,16 +36,17 @@ export default function ListProducts() {
         });
     };
 
+    const AddProduct = () => {
+        navigate('/add-product');
+    };
+
     const deleteProducts = () => {
         const productToDelete = Array.from(selectedProducts); // Convert Set to Array
        
-        axios.post('https://scandiweb-test.koomiz.com/products/delete', { ids: productToDelete, method: 'DELETE' })
+        axios.post('https://scandiweb-test.koomiz.com/api/public/products/delete', { ids: productToDelete, method: 'DELETE' })
             .then(response => {
                 getProducts(); // Refresh the product list
                 setSelectedProducts(new Set()); // Clear selected products
-            })
-            .then(function(response){
-                navigate('/');
             });
     };
 
@@ -62,10 +62,10 @@ export default function ListProducts() {
         <div className='List product-container'>
 
             <div className="header-details">
-                <h1>Products List</h1>
+                <h1>Product List</h1>
                 <div>
-                    <Link to="/add-product" className='btn'>ADD</Link>
-                    <Link id="delete-product-btn" className='btn' onClick={deleteProducts}>MASS DELETE</Link>
+                    <button onClick={AddProduct} className='btn'>ADD</button>
+                    <button id="delete-product-btn" className='btn' onClick={deleteProducts}>MASS DELETE</button>
                 </div>     
             </div>
 
@@ -81,8 +81,8 @@ export default function ListProducts() {
                                 onChange={() => handleCheckboxChange(product.id)}
                             />
                             <div className="product-details">
-                                <h3>{product.sku}</h3> 
-                                <h2>{product.name}</h2> 
+                                <p>{product.sku}</p> 
+                                <h3>{product.name}</h3> 
                                 <h3>{product.title}</h3>
                                 <p>{product.price} $</p>
                                 <p>
@@ -96,7 +96,7 @@ export default function ListProducts() {
                                         </>
                                     ) : (
                                         <>
-                                            <strong>Dimensions:</strong> {formatNumber(product.height)}x{formatNumber(product.width)}x{formatNumber(product.length)}
+                                            <strong>Dimension:</strong> {formatNumber(product.height)}x{formatNumber(product.width)}x{formatNumber(product.length)}
                                         </>
                                     )}
                                 </p>
