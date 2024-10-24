@@ -1,5 +1,5 @@
 <?php
-interface ProductValidatorInterface
+interface Validator
 {
     public function validate($data, array &$errors);
 }

@@ -96,7 +96,7 @@ class Product {
     public function createProduct() {
         $productData = json_decode(file_get_contents('php://input'));
 
-        $validator = new Validator($productData, $this->conn);
+        $validator = new ProductValidator($productData, $this->conn);
         $validationResult = $validator->validate();
         
         if (!empty($validationResult)) {

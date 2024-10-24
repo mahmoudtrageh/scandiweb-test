@@ -6,7 +6,7 @@ require_once __DIR__ . '/../validators/FurnitureValidator.php';
 
 class ValidatorFactory
 {
-    public static function create($type): ProductValidatorInterface
+    public static function create($type): Validator
     {
         switch ($type) {
             case 'DVD':

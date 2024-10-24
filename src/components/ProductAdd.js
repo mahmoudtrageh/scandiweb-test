@@ -39,7 +39,7 @@ export default function AddProduct() {
     const handleSubmit = (event) => {
         event.preventDefault();
         try {
-            axios.post('https://scandiweb-test.koomiz.com/api/public/products/create', inputs, {
+            axios.post('http://localhost:8000/api/public/products/create', inputs, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../factories/ValidatorFactory.php';
 
-class Validator
+class ProductValidator
 {
     private $errors = [];
     private $data; 

@@ -17,7 +17,7 @@ export default function ProductList() {
     const navigate = useNavigate();
 
     function getProducts() {
-        axios.get('https://scandiweb-test.koomiz.com/api/public/', {
+        axios.get('http://localhost:8000/api/public/', {
             method: 'GET', 
         }).then(function (response) {
             setproducts(response.data);
@@ -43,7 +43,7 @@ export default function ProductList() {
     const deleteProducts = () => {
         const productToDelete = Array.from(selectedProducts); // Convert Set to Array
        
-        axios.post('https://scandiweb-test.koomiz.com/api/public/products/delete', { ids: productToDelete, method: 'DELETE' })
+        axios.post('http://localhost:8000/api/public/products/delete', { ids: productToDelete, method: 'DELETE' })
             .then(response => {
                 getProducts(); // Refresh the product list
                 setSelectedProducts(new Set()); // Clear selected products

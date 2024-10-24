@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/ProductValidatorInterface.php';
+require_once __DIR__ . '/Validator.php';
 
-class FurnitureValidator implements ProductValidatorInterface
+class FurnitureValidator implements Validator
 {
     public function validate($data, array &$errors)
     {
