@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../factories/ValidatorFactory.php';
+
 class Validator
 {
     private $errors = [];
@@ -14,18 +16,15 @@ class Validator
 
     public function validate()
     {
-        // Validate required fields first
         $this->validateRequiredFields();
 
-        // Return errors if any exist
         if (!empty($this->errors)) {
             return ['errors' => $this->errors[0]];
         } 
         
-        $this->checkFieldTypes();
+        $this->validateFieldTypes();
         
-        if(!empty($this->errors))
-        {
+        if (!empty($this->errors)) {
             return ['errors' => $this->errors[0]]; 
         }
         
@@ -56,29 +55,17 @@ class Validator
         }
     }
 
-    private function checkFieldTypes()
+    private function validateFieldTypes()
     {
         $this->validateNumeric($this->data->price);
         $this->validateString($this->data->name);
-
-        switch ($this->data->type) {
-            case 'DVD':
-                $this->validateNumeric($this->data->size);
-                break;
-            case 'Book':
-                $this->validateNumeric($this->data->weight);
-                break;
-            case 'Furniture':
-                foreach (['height', 'width', 'length'] as $dimension) {
-                    $this->validateNumeric($this->data->$dimension);
-                }
-                break;
-        }
+        
+        $validator = ValidatorFactory::create($this->data->type);
+        $validator->validate($this->data, $this->errors);
     }
     
-     private function validateNumeric($value)
+    private function validateNumeric($value)
     {
-       
         if ($value == '' || $value <= 0) {
             $this->errors[] = 'Please, provide the data of indicated type';
         }
