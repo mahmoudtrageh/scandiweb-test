@@ -121,8 +121,8 @@ class Product {
     
             $stmt = $this->conn->prepare($sql);
     
-            $sku = $this->getSku();
-            $name = $this->getName();
+            $sku = htmlspecialchars($this->getSku(), ENT_QUOTES, 'UTF-8');
+            $name = htmlspecialchars($this->getName(), ENT_QUOTES, 'UTF-8');
             $price = $this->getPrice();
             $size = $this->getSize();
             $weight = $this->getWeight();
