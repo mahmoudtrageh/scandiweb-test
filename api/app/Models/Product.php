@@ -100,7 +100,6 @@ class Product {
         $validationResult = $validator->validate();
         
         if (!empty($validationResult)) {
-            // Handle validation errors
             echo json_encode(['errors' => $validationResult]);
             exit;
         }

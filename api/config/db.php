@@ -1,6 +1,6 @@
 <?php
 	class DB {
-		private $server = 'localhost';
+		private $server = '127.0.0.1';
 		private $dbname = 'product_task';
 		private $user = 'root';
 		private $pass = '';

@@ -1,12 +1,20 @@
 <?php
 
-require_once __DIR__ . '/../factories/ValidatorFactory.php';
+require_once __DIR__ . '/DVDValidator.php';
+require_once __DIR__ . '/BookValidator.php';
+require_once __DIR__ . '/FurnitureValidator.php';
 
 class ProductValidator
 {
     private $errors = [];
     private $data; 
     private $conn; 
+
+    private static $validators = [
+        'DVD' => DVDValidator::class,
+        'Book' => BookValidator::class,
+        'Furniture' => FurnitureValidator::class
+    ];
 
     public function __construct($data, PDO $db)
     {
@@ -34,18 +42,6 @@ class ProductValidator
     private function validateRequiredFields()
     {
         $requiredFields = ['sku', 'name', 'price', 'type'];
-
-        switch ($this->data->type ?? '') {
-            case 'DVD':
-                $requiredFields[] = 'size';
-                break;
-            case 'Book':
-                $requiredFields[] = 'weight';
-                break;
-            case 'Furniture':
-                $requiredFields = array_merge($requiredFields, ['height', 'width', 'length']);
-                break;
-        }
              
         foreach ($requiredFields as $field) {
             if (!isset($this->data->$field) || (is_null($this->data->$field) || trim($this->data->$field) === '')) {
@@ -60,8 +56,12 @@ class ProductValidator
         $this->validateNumeric($this->data->price);
         $this->validateString($this->data->name);
         
-        $validator = ValidatorFactory::create($this->data->type);
-        $validator->validate($this->data, $this->errors);
+        $validatorClass = self::$validators[$this->data->type] ?? null;
+
+        if ($validatorClass) {
+            $validator = new $validatorClass($this->data);
+            $result = $validator->validate($this->data, $this->errors);
+        } 
     }
     
     private function validateNumeric($value)
