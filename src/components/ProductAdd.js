@@ -6,7 +6,7 @@ import BookForm from './forms/BookForm';
 import FurnitureForm from './forms/FurnitureForm';
 
 export default function AddProduct() {
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState('');
     const [inputs, setInputs] = useState({
         sku: '',
         name: '',
@@ -29,7 +29,7 @@ export default function AddProduct() {
         const name = event.target.name;
         const value = event.target.value;
         setInputs(values => ({ ...values, [name]: value }));
-        setErrors({ ...errors, [name]: '' }); // Clear specific error on change
+        setErrors(''); // Clear errors on any change
     };
 
     const goHome = () => {
@@ -45,16 +45,26 @@ export default function AddProduct() {
                 },
             })
             .then((response) => {
-                if (response.data.errors) {
+                // Handle the response data
+                if (response.data && response.data.errors) {
+                    // Set the error message directly
                     setErrors(response.data.errors);
                 } else {
                     goHome();
                 }
+            })
+            .catch((error) => {
+                // Handle any axios errors
+                if (error.response && error.response.data && error.response.data.errors) {
+                    setErrors(error.response.data.errors);
+                } else {
+                    setErrors('An error occurred. Please try again.');
+                }
             });
-        } catch {
-            goHome();
+        } catch (error) {
+            console.error("Submit error:", error);
+            setErrors('An unexpected error occurred.');
         }
-       
     };
 
     const handleTypeChange = (event) => {
@@ -87,7 +97,13 @@ export default function AddProduct() {
                     </div>
                 </div>
                 <div className='form'>
-                    <p>{errors.errors && <small className="text-danger">{errors.errors}</small>}</p>
+                    {/* Display error message if it exists */}
+                    {errors && (
+                        <div className="error-message">
+                            <small className="text-danger">{errors}</small>
+                        </div>
+                    )}
+                    
                     <div className='form-group'>
                         <label htmlFor="sku">SKU</label>
                         <input type="text" id="sku" name="sku" value={inputs.sku} onChange={handleChange} className='form-control' />

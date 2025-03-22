@@ -1,17 +1,13 @@
 <?php
 
-require_once __DIR__ . '/Validator.php';
+namespace App\Validators;
 
-class BookValidator implements Validator
+class BookValidator extends AbstractValidator
 {
-    public function validate($data, array &$errors)
+    public function validate()
     {
-        if (!isset($data->weight) || (is_null($data->weight) || trim($data->weight) === '')) {
-            $errors[] = "Please, submit required data";
-        }
-
-        if (empty($data->weight) || $data->weight <= 0) {
-            $errors[] = 'Please, provide the data of indicated type';
-        }
+        $this->validateRequiredField('weight');
+        $this->validateNumeric('weight');
+        return $this->getErrors();
     }
 }

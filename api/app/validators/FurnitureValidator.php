@@ -1,23 +1,20 @@
 <?php
 
-require_once __DIR__ . '/Validator.php';
+namespace App\Validators;
 
-class FurnitureValidator implements Validator
+class FurnitureValidator extends AbstractValidator
 {
-    public function validate($data, array &$errors)
+    public function validate()
     {
-        $requiredFields = ['height', 'width', 'length'];
-
-        foreach ($requiredFields as $dimension) {
-
-            if (!isset($data->$dimension) || (is_null($data->$dimension) || trim($data->$dimension) === '')) {
-                $errors[] = "Please, submit required data";
+        $dimensions = ['height', 'width', 'length'];
+        
+        foreach ($dimensions as $dimension) {
+            if (!$this->validateRequiredField($dimension)) {
                 break;
             }
-
-            if (empty($data->$dimension) || $data->$dimension <= 0) {
-                $errors[] = "Please, provide the data of indicated type";
-            }
+            $this->validateNumeric($dimension);
         }
+        
+        return $this->getErrors();
     }
 }

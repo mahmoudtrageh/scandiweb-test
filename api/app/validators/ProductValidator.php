@@ -1,80 +1,61 @@
 <?php
 
-require_once __DIR__ . '/DVDValidator.php';
-require_once __DIR__ . '/BookValidator.php';
-require_once __DIR__ . '/FurnitureValidator.php';
+namespace App\Validators;
 
 class ProductValidator
 {
-    private $errors = [];
-    private $data; 
-    private $conn; 
+    private $data;
+    private $conn;
+    private $requiredFields = ['sku', 'name', 'price', 'type'];
 
-    private static $validators = [
-        'DVD' => DVDValidator::class,
-        'Book' => BookValidator::class,
-        'Furniture' => FurnitureValidator::class
-    ];
-
-    public function __construct($data, PDO $db)
+    public function __construct($data, \PDO $db)
     {
         $this->data = $data;
-        $this->conn = $db; 
+        $this->conn = $db;
     }
 
     public function validate()
     {
-        $this->validateRequiredFields();
-
-        if (!empty($this->errors)) {
-            return ['errors' => $this->errors[0]];
-        } 
-        
-        $this->validateFieldTypes();
-        
-        if (!empty($this->errors)) {
-            return ['errors' => $this->errors[0]]; 
-        }
-        
-        return false;
-    }
-
-    private function validateRequiredFields()
-    {
-        $requiredFields = ['sku', 'name', 'price', 'type'];
-             
-        foreach ($requiredFields as $field) {
+        // Validate common required fields
+        foreach ($this->requiredFields as $field) {
             if (!isset($this->data->$field) || (is_null($this->data->$field) || trim($this->data->$field) === '')) {
-                $this->errors[] = "Please, submit required data";
-                break;
+                return ['errors' => "Please, submit required data"];
             }
         }
-    }
 
-    private function validateFieldTypes()
-    {
-        $this->validateNumeric($this->data->price);
-        $this->validateString($this->data->name);
+        // Validate common field types
+        if ($this->data->price == '' || $this->data->price <= 0) {
+            return ['errors' => 'Please, provide the data of indicated type'];
+        }
+
+        if (trim($this->data->name) === '') {
+            return ['errors' => 'Please, provide the data of indicated type'];
+        }
+
+        // Check for duplicate SKU
+        $sql = "SELECT COUNT(*) as count FROM products WHERE sku = :sku";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':sku', $this->data->sku);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         
-        $validatorClass = self::$validators[$this->data->type] ?? null;
-
-        if ($validatorClass) {
-            $validator = new $validatorClass($this->data);
-            $result = $validator->validate($this->data, $this->errors);
-        } 
-    }
-    
-    private function validateNumeric($value)
-    {
-        if ($value == '' || $value <= 0) {
-            $this->errors[] = 'Please, provide the data of indicated type';
+        if ($result['count'] > 0) {
+            return ['errors' => 'SKU already exists'];
         }
-    }
 
-    private function validateString($value)
-    {
-        if (trim($value) === '') {
-            $this->errors[] = 'Please, provide the data of indicated type';
+        // Validate specific product type fields using a type-specific validator
+        try {
+            $typeValidator = ValidatorFactory::createValidator($this->data);
+            $errors = [];
+            $typeValidator->validate($errors);
+            
+            if (count($errors) > 0) {
+                return ['errors' => $errors[0]];
+            }
+        } catch (\Exception $e) {
+            return ['errors' => $e->getMessage()];
         }
+
+        return false;
     }
 }
